@@ -2,8 +2,8 @@ use std::collections::{HashMap, HashSet, VecDeque};
 
 fn main() {
     let input = include_str!("./input_1.txt");
-    // let output_1 = part_1(input);
-    // println!("{}", output_1);
+    let output_1 = part_1(input);
+    println!("{}", output_1);
     let output_2 = part_2(input);
     println!("{}", output_2);
 }
