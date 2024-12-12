@@ -102,19 +102,19 @@ fn part_2(input: &str, blinks: u128) -> String {
 mod tests {
     use super::*;
 
-    // #[test]
-    // fn test_1_blink() {
-    //     const INPUT: &str = "0 1 10 99 999";
-    //     let output = part_1(INPUT, 1);
-    //     assert_eq!(output, "7".to_string())
-    // }
+    #[test]
+    fn test_1_blink() {
+        const INPUT: &str = "0 1 10 99 999";
+        let output = part_1(INPUT, 1);
+        assert_eq!(output, "7".to_string())
+    }
 
-    // #[test]
-    // fn test_6_blink() {
-    //     const INPUT: &str = "125 17";
-    //     let output = part_1(INPUT, 6);
-    //     assert_eq!(output, "22".to_string())
-    // }
+    #[test]
+    fn test_6_blink() {
+        const INPUT: &str = "125 17";
+        let output = part_1(INPUT, 6);
+        assert_eq!(output, "22".to_string())
+    }
 
     #[test]
     fn test_2_6_blink() {
@@ -123,17 +123,17 @@ mod tests {
         assert_eq!(output, "22".to_string())
     }
 
-    // #[test]
-    // fn test_25_blink() {
-    //     const INPUT: &str = "125 17";
-    //     let output = part_1(INPUT, 25);
-    //     assert_eq!(output, "55312".to_string())
-    // }
+    #[test]
+    fn test_25_blink() {
+        const INPUT: &str = "125 17";
+        let output = part_1(INPUT, 25);
+        assert_eq!(output, "55312".to_string())
+    }
 
-    // #[test]
-    // fn test_2() {
-    //     const INPUT: &str = "125 17";
-    //     let output = part_2(INPUT, 25);
-    //     assert_eq!(output, "55312".to_string())
-    // }
+    #[test]
+    fn test_2() {
+        const INPUT: &str = "125 17";
+        let output = part_2(INPUT, 25);
+        assert_eq!(output, "55312".to_string())
+    }
 }
