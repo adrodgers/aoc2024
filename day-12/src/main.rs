@@ -36,11 +36,10 @@ fn part_1(input: &str) -> String {
             let mut perim_checked_this_region: HashSet<(i32, i32, i32, i32)> = HashSet::new();
             next_positions.push_back(start);
             if !visited.contains(&(start.0, start.1)) {
-                perim_checked_this_region.insert((start.0, start.1, 0, 0));
                 // keep going until region fully explored
                 while !next_positions.is_empty() {
                     if let Some(pos) = next_positions.pop_front() {
-                        dbg!(&pos);
+                        // dbg!(&pos);
                         if !visited.contains(&pos) {
                             area += 1;
                         }
@@ -76,8 +75,8 @@ fn part_1(input: &str) -> String {
                         visited.insert(pos);
                     }
                 }
-                dbg!(&perimeter);
-                dbg!(&area);
+                // dbg!(&perimeter);
+                // dbg!(&area);
                 total_cost += perimeter * area;
             };
         };
@@ -102,14 +101,15 @@ fn part_2(input: &str) -> String {
             let mut perimeter = 0;
             let mut area = 0;
             let region_char = map.get(&start).unwrap();
+            dbg!(&region_char);
             let mut next_positions: VecDeque<(i32, i32)> = VecDeque::new();
             let mut perim_checked_this_region: HashSet<(i32, i32, i32, i32)> = HashSet::new();
             next_positions.push_back(start);
             if !visited.contains(&(start.0, start.1)) {
-                perim_checked_this_region.insert((start.0, start.1, 0, 0));
                 // keep going until region fully explored
                 while !next_positions.is_empty() {
                     if let Some(pos) = next_positions.pop_front() {
+                        dbg!(&pos);
                         if !visited.contains(&pos) {
                             area += 1;
                         }
@@ -137,6 +137,8 @@ fn part_2(input: &str) -> String {
                                     if !perim_checked_this_region
                                         .contains(&(tmp_pos.0, tmp_pos.1, i, j))
                                     {
+                                        perim_checked_this_region
+                                            .insert((tmp_pos.0, tmp_pos.1, i, j));
                                         perimeter += 1;
                                     }
                                 }
@@ -145,7 +147,11 @@ fn part_2(input: &str) -> String {
                         visited.insert(pos);
                     }
                 }
-                dbg!(&perim_checked_this_region);
+                // check all perim vales to determine the amount of sides
+                // pick a point on the perimeter, traverse the perimeter until the start point is reached, track the number of direction changes.
+                let perim_start = perim_checked_this_region.iter().next();
+                let mut sides = 1;
+                for i in 0..perim_checked_this_region.len() {}
                 total_cost += perimeter * area;
             };
         };
@@ -211,6 +217,7 @@ EEEC
         let output = part_2(INPUT);
         assert_eq!(output, "80".to_string())
     }
+
     #[test]
     fn test_case_2_2() {
         const INPUT: &str = "OOOOO
@@ -221,5 +228,17 @@ OOOOO
 ";
         let output = part_2(INPUT);
         assert_eq!(output, "436".to_string())
+    }
+
+    #[test]
+    fn test_case_2_3() {
+        const INPUT: &str = "EEEEE
+EXXXX
+EEEEE
+EXXXX
+EEEEE
+";
+        let output = part_2(INPUT);
+        assert_eq!(output, "236".to_string())
     }
 }
