@@ -1,3 +1,4 @@
+use core::panic;
 use std::collections::{HashMap, HashSet, VecDeque};
 
 fn main() {
@@ -8,8 +9,16 @@ fn main() {
     println!("{}", output_2);
 }
 
-const UP: (i32, i32) = (0, 1);
-const DOWN: (i32, i32) = (0, -1);
+#[derive(Debug)]
+enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+const UP: (i32, i32) = (0, -1);
+const DOWN: (i32, i32) = (0, 1);
 const LEFT: (i32, i32) = (-1, 0);
 const RIGHT: (i32, i32) = (1, 0);
 
@@ -149,9 +158,29 @@ fn part_2(input: &str) -> String {
                 }
                 // check all perim vales to determine the amount of sides
                 // pick a point on the perimeter, traverse the perimeter until the start point is reached, track the number of direction changes.
-                let perim_start = perim_checked_this_region.iter().next();
-                let mut sides = 1;
-                for i in 0..perim_checked_this_region.len() {}
+                // NOPE
+                // Find instances of corners and sum
+                dbg!(&perim_checked_this_region);
+                let scaled: Vec<(i32, i32, Direction)> = perim_checked_this_region
+                    .iter()
+                    .map(|t| {
+                        let dir = (t.2, t.3);
+                        println!("{:?} : {:?} : {:?}", dir, (t.2, t.3), UP);
+                        match dir {
+                            UP => (t.0 + DOWN.0, t.1 + DOWN.1, Direction::Up),
+                            DOWN => (t.0 + UP.0, t.1 + UP.1, Direction::Down),
+                            LEFT => (t.0 + RIGHT.0, t.1 + RIGHT.1, Direction::Left),
+                            RIGHT => (t.0 + LEFT.0, t.1 + LEFT.1, Direction::Right),
+                            _ => panic!("ahhhh"),
+                        }
+                    })
+                    .collect();
+                dbg!(scaled);
+                // let mut v = Vec::from_iter(perim_checked_this_region);
+                // let mut up: Vec<(i32, i32, i32, i32)> =
+                //     v.into_iter().filter(|p| (p.2, p.3) == UP).collect();
+                // up.sort();
+                // dbg!(up);
                 total_cost += perimeter * area;
             };
         };
@@ -240,5 +269,18 @@ EEEEE
 ";
         let output = part_2(INPUT);
         assert_eq!(output, "236".to_string())
+    }
+
+    #[test]
+    fn test_case_2_4() {
+        const INPUT: &str = "AAAAAA
+AAABBA
+AAABBA
+ABBAAA
+ABBAAA
+AAAAAA
+";
+        let output = part_2(INPUT);
+        assert_eq!(output, "1206".to_string())
     }
 }

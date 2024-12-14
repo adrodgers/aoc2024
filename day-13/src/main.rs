@@ -8,9 +8,9 @@ fn main() {
 
 #[derive(Default, Debug)]
 struct Game {
-    button_a: (u64, u64),
-    button_b: (u64, u64),
-    prize: (u64, u64),
+    button_a: (i64, i64),
+    button_b: (i64, i64),
+    prize: (i64, i64),
 }
 
 fn part_1(input: &str) -> String {
@@ -29,11 +29,11 @@ fn part_1(input: &str) -> String {
                         0 => match j {
                             0 => {
                                 game.button_a.0 =
-                                    v.split("+").nth(1).unwrap().parse::<u64>().unwrap();
+                                    v.split("+").nth(1).unwrap().parse::<i64>().unwrap();
                             }
                             1 => {
                                 game.button_a.1 =
-                                    v.split("+").nth(1).unwrap().parse::<u64>().unwrap();
+                                    v.split("+").nth(1).unwrap().parse::<i64>().unwrap();
                             }
                             _ => {
                                 panic!("Shit")
@@ -42,11 +42,11 @@ fn part_1(input: &str) -> String {
                         1 => match j {
                             0 => {
                                 game.button_b.0 =
-                                    v.split("+").nth(1).unwrap().parse::<u64>().unwrap();
+                                    v.split("+").nth(1).unwrap().parse::<i64>().unwrap();
                             }
                             1 => {
                                 game.button_b.1 =
-                                    v.split("+").nth(1).unwrap().parse::<u64>().unwrap();
+                                    v.split("+").nth(1).unwrap().parse::<i64>().unwrap();
                             }
                             _ => {
                                 panic!("Shit")
@@ -54,10 +54,10 @@ fn part_1(input: &str) -> String {
                         },
                         2 => match j {
                             0 => {
-                                game.prize.0 = v.split("=").nth(1).unwrap().parse::<u64>().unwrap();
+                                game.prize.0 = v.split("=").nth(1).unwrap().parse::<i64>().unwrap();
                             }
                             1 => {
-                                game.prize.1 = v.split("=").nth(1).unwrap().parse::<u64>().unwrap();
+                                game.prize.1 = v.split("=").nth(1).unwrap().parse::<i64>().unwrap();
                             }
                             _ => {
                                 panic!("Shit")
@@ -72,11 +72,107 @@ fn part_1(input: &str) -> String {
         games.push(game);
     });
     dbg!(&games);
-    "".to_string()
+    // No more than 100 presses per button!
+    // Some games cannot be won!
+    let mut total_tokens: i64 = 0;
+    for game in games {
+        let mut tokens: Vec<i64> = Vec::new();
+        for i in 0..100 {
+            for j in 0..100 {
+                let x = i * game.button_a.0 + j * game.button_b.0;
+                let y = i * game.button_a.1 + j * game.button_b.1;
+                if game.prize.0 == x && game.prize.1 == y {
+                    tokens.push(i * 3 + j);
+                }
+            }
+        }
+        if !tokens.is_empty() {
+            tokens.sort();
+            total_tokens += tokens[0];
+        }
+    }
+    total_tokens.to_string()
 }
 
 fn part_2(input: &str) -> String {
-    "".to_string()
+    let mut games: Vec<Game> = vec![];
+    input.split("\n\n").for_each(|g| {
+        let mut game = Game::default();
+        g.lines().enumerate().for_each(|(i, l)| {
+            l.split(":")
+                .nth(1)
+                .unwrap()
+                .trim()
+                .split(",")
+                .enumerate()
+                .for_each(|(j, v)| {
+                    match i {
+                        0 => match j {
+                            0 => {
+                                game.button_a.0 =
+                                    v.split("+").nth(1).unwrap().parse::<i64>().unwrap();
+                            }
+                            1 => {
+                                game.button_a.1 =
+                                    v.split("+").nth(1).unwrap().parse::<i64>().unwrap();
+                            }
+                            _ => {
+                                panic!("Shit")
+                            }
+                        },
+                        1 => match j {
+                            0 => {
+                                game.button_b.0 =
+                                    v.split("+").nth(1).unwrap().parse::<i64>().unwrap();
+                            }
+                            1 => {
+                                game.button_b.1 =
+                                    v.split("+").nth(1).unwrap().parse::<i64>().unwrap();
+                            }
+                            _ => {
+                                panic!("Shit")
+                            }
+                        },
+                        2 => match j {
+                            0 => {
+                                game.prize.0 = v.split("=").nth(1).unwrap().parse::<i64>().unwrap()
+                                    + 10000000000000;
+                            }
+                            1 => {
+                                game.prize.1 = v.split("=").nth(1).unwrap().parse::<i64>().unwrap()
+                                    + 10000000000000;
+                            }
+                            _ => {
+                                panic!("Shit")
+                            }
+                        },
+                        _ => {
+                            panic!("Shit")
+                        }
+                    };
+                });
+        });
+        games.push(game);
+    });
+    dbg!(&games);
+    // No more than 100 presses per button!
+    // Some games cannot be won!
+    let mut total_tokens: i64 = 0;
+    for game in games {
+        let b = (game.button_a.0 * game.prize.1 - game.button_a.1 * game.prize.0)
+            / (game.button_b.1 * game.button_a.0 - game.button_a.1 * game.button_b.0);
+        let a = (game.prize.0 - game.button_b.0 * b) / game.button_a.0;
+        dbg!(b);
+        dbg!(a);
+        let eq1 = (game.button_a.0) * a + game.button_b.0 * b;
+        let eq2 = (game.button_a.1) * a + game.button_b.1 * b;
+        dbg!(eq1 == game.prize.0);
+        dbg!(eq2 == game.prize.1);
+        if eq1 == game.prize.0 && eq2 == game.prize.1 {
+            total_tokens += (a * 3 + b);
+        }
+    }
+    total_tokens.to_string()
 }
 
 #[cfg(test)]
@@ -102,7 +198,7 @@ Prize: X=18641, Y=10279
     #[test]
     fn test_1() {
         let output = part_1(TEST_INPUT);
-        assert_eq!(output, "".to_string())
+        assert_eq!(output, "480".to_string())
     }
 
     #[test]
