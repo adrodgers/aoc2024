@@ -159,7 +159,8 @@ fn part_2(input: &str) -> String {
                 // check all perim vales to determine the amount of sides
                 // pick a point on the perimeter, traverse the perimeter until the start point is reached, track the number of direction changes.
                 // NOPE
-                // Find instances of corners and sum
+                // Find instances of corners and sum!
+                // Internal corners are hardest, leave these until last, remaining should be internal
                 dbg!(&perim_checked_this_region);
                 let scaled: Vec<(i32, i32, Direction)> = perim_checked_this_region
                     .iter()
